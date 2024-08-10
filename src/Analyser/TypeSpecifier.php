@@ -585,14 +585,14 @@ class TypeSpecifier
 				$rightIsAlwaysTrue = $scope->getType($expr->right)->isTrue()->yes();
 
 				if ($leftIsAlwaysTrue && !$rightIsAlwaysTrue) {
-					return $context->true() ? $rightTypes : $rightTypes->normalize($rightScope);
+					$types = $context->true() ? $rightTypes : $rightTypes->normalize($rightScope);
 				}
 				if ($rightIsAlwaysTrue && !$leftIsAlwaysTrue) {
-					return $context->true() ? $leftTypes : $leftTypes->normalize($scope);
+					$types = $context->true() ? $leftTypes : $leftTypes->normalize($scope);
 				}
 			}
 
-			$types = $context->true()
+			$types ??= $context->true()
 				? $leftTypes->unionWith($rightTypes)
 				: $leftTypes->normalize($scope)->intersectWith($rightTypes->normalize($rightScope));
 			if ($context->false()) {
@@ -625,14 +625,14 @@ class TypeSpecifier
 				$rightIsAlwaysFalse = $scope->getType($expr->right)->isFalse()->yes();
 
 				if ($leftIsAlwaysFalse && !$rightIsAlwaysFalse) {
-					return $context->true() ? $rightTypes->normalize($rightScope) : $rightTypes;
+					$types = $context->true() ? $rightTypes->normalize($rightScope) : $rightTypes;
 				}
 				if ($rightIsAlwaysFalse && !$leftIsAlwaysFalse) {
-					return $context->true() ? $leftTypes->normalize($scope) : $leftTypes;
+					$types = $context->true() ? $leftTypes->normalize($scope) : $leftTypes;
 				}
 			}
 
-			$types = $context->true()
+			$types ??= $context->true()
 				? $leftTypes->normalize($scope)->intersectWith($rightTypes->normalize($rightScope))
 				: $leftTypes->unionWith($rightTypes);
 			if ($context->true()) {
