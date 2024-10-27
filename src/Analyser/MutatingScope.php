@@ -2604,7 +2604,7 @@ final class MutatingScope implements Scope
 			$this->namespace,
 			$this->nativeExpressionTypes,
 			[],
-			[],
+			$this->conditionalExpressions,
 			$this->inClosureBindScopeClasses,
 			$this->anonymousFunctionReflection,
 			$this->inFirstLevelStatement,
