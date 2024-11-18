@@ -69,22 +69,13 @@ function str_shuffle(string $string): string {}
 
 /**
  * @param array<mixed> $result
- * @param-out ($string is lowercase-string&uppercase-string
- * 		? array<int|string, array<mixed>|(lowercase-string&uppercase-string)>
- * 		: ($string is lowercase-string
- *     		? array<int|string, array<mixed>|lowercase-string>
- *     		: ($string is uppercase-string
- *    			? array<int|string, array<mixed>|uppercase-string>
- *         		: array<int|string, array<mixed>|string>
- *     		)
- * 		)
- * 	) $result
+ * @param-out array<int|string, array<mixed>|string> $result
  */
 function parse_str(string $string, array &$result): void {}
 
 /**
  * @param array<mixed> $result
- * @param-out array<string, array<mixed>|string> $result
+ * @param-out array<int|string, array<mixed>|string> $result
  */
 function mb_parse_str(string $string, array &$result): bool {}
 

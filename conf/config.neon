@@ -1575,6 +1575,11 @@ services:
 			- phpstan.functionParameterOutTypeExtension
 
 	-
+		class: PHPStan\Type\Php\ParseStrParameterOutTypeExtension
+		tags:
+			- phpstan.functionParameterOutTypeExtension
+
+	-
 		class: PHPStan\Type\Php\PregReplaceCallbackClosureTypeExtension
 		tags:
 			- phpstan.functionParameterClosureTypeExtension
