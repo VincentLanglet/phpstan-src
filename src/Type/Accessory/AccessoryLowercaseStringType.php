@@ -116,8 +116,8 @@ class AccessoryLowercaseStringType implements CompoundType, AccessoryType
 		return (new IsSuperTypeOfResult(
 			$isLowercase,
 			$otherType->isString()->yes() && $isLowercase->no()
-				? [sprintf("%s is not lowercase.", $otherType->describe(VerbosityLevel::value()))]
-				: []
+				? [sprintf('%s is not lowercase.', $otherType->describe(VerbosityLevel::value()))]
+				: [],
 		))
 			->and($otherType instanceof self ? IsSuperTypeOfResult::createYes() : IsSuperTypeOfResult::createMaybe());
 	}
