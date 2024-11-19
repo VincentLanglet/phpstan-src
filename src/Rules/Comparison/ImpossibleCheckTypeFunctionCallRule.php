@@ -49,7 +49,7 @@ final class ImpossibleCheckTypeFunctionCallRule implements Rule
 
 		$addTip = function (RuleErrorBuilder $ruleErrorBuilder) use ($scope, $node, $reasons): RuleErrorBuilder {
 			if (count($reasons) > 0) {
-				return $ruleErrorBuilder->acceptsReasonsTip($reasons);
+				$ruleErrorBuilder->acceptsReasonsTip($reasons);
 			}
 
 			if (!$this->treatPhpDocTypesAsCertain) {
