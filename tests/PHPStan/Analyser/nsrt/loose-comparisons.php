@@ -717,9 +717,6 @@ class HelloWorld
 	): void
 	{
 		assertType('bool', '' == $upper);
-//		if ($upper != '') {
-//			assertType('false', '' == $upper);
-//		}
 		assertType('bool', '0' == $upper);
 		assertType('false', 'a' == $upper);
 		assertType('false', 'abc' == $upper);
@@ -729,9 +726,6 @@ class HelloWorld
 		assertType('bool', $upper == $lower);
 
 		assertType('bool', '' == $lower);
-//		if ($lower != '') {
-//			assertType('false', '' == $lower);
-//		}
 		assertType('bool', '0' == $lower);
 		assertType('false', 'A' == $lower);
 		assertType('false', 'ABC' == $lower);
@@ -739,6 +733,13 @@ class HelloWorld
 		assertType('bool', strtoupper($s) == $lower);
 		assertType('bool', strtolower($s) == $lower);
 		assertType('bool', $lower == $upper);
+
+		if ($upper != '') {
+			assertType('false', '' == $upper);
+		}
+		if ($lower != '') {
+			assertType('false', '' == $lower);
+		}
 
 		assertType('false', $arr == $i);
 		assertType('false', $nonEmptyArr == $i);
