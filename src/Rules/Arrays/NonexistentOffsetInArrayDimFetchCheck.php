@@ -56,7 +56,7 @@ final class NonexistentOffsetInArrayDimFetchCheck
 
 		if ($type->hasOffsetValueType($dimType)->no()) {
 			return [
-				RuleErrorBuilder::message(sprintf('Offset %s does not exist on %s.', $dimType->describe(count($dimType->getConstantStrings()) > 0 ? VerbosityLevel::precise() : VerbosityLevel::value()), $type->describe(VerbosityLevel::value())))
+				RuleErrorBuilder::message(sprintf('Offset %s does not exist on %s.', $dimType->describe(VerbosityLevel::precise()), $type->describe(VerbosityLevel::value())))
 					->identifier('offsetAccess.notFound')
 					->build(),
 			];
@@ -105,7 +105,7 @@ final class NonexistentOffsetInArrayDimFetchCheck
 
 			if ($report) {
 				return [
-					RuleErrorBuilder::message(sprintf('Offset %s might not exist on %s.', $dimType->describe(count($dimType->getConstantStrings()) > 0 ? VerbosityLevel::precise() : VerbosityLevel::value()), $type->describe(VerbosityLevel::value())))
+					RuleErrorBuilder::message(sprintf('Offset %s might not exist on %s.', $dimType->describe(VerbosityLevel::precise()), $type->describe(VerbosityLevel::value())))
 						->identifier('offsetAccess.notFound')
 						->build(),
 				];

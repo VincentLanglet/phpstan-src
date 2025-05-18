@@ -940,4 +940,14 @@ class NonexistentOffsetInArrayDimFetchRuleTest extends RuleTestCase
 		$this->analyse([__DIR__ . '/data/bug-3747.php'], []);
 	}
 
+	public function testBug13036(): void
+	{
+		$this->analyse([__DIR__ . '/data/bug-13036.php'], [
+			[
+				"Offset uppercase-string does not exist on array{en: 'English', de: 'German'}.",
+				16,
+			],
+		]);
+	}
+
 }

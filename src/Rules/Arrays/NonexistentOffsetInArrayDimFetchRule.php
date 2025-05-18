@@ -77,7 +77,7 @@ final class NonexistentOffsetInArrayDimFetchRule implements Rule
 					return [
 						RuleErrorBuilder::message(sprintf(
 							'Cannot access offset %s on %s.',
-							$dimType->describe(count($dimType->getConstantStrings()) > 0 ? VerbosityLevel::precise() : VerbosityLevel::value()),
+							$dimType->describe(VerbosityLevel::precise()),
 							$isOffsetAccessibleType->describe(VerbosityLevel::value()),
 						))->identifier('offsetAccess.nonOffsetAccessible')->build(),
 					];
