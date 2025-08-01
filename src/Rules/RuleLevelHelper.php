@@ -150,6 +150,10 @@ final class RuleLevelHelper
 	/** @api */
 	public function accepts(Type $acceptingType, Type $acceptedType, bool $strictTypes): RuleLevelHelperAcceptsResult
 	{
+		if ($acceptingType->accepts($acceptedType, $strictTypes)->yes()) {
+			return new RuleLevelHelperAcceptsResult(true, []);
+		}
+
 		[$acceptedType, $checkForUnion] = $this->transformAcceptedType($acceptingType, $acceptedType);
 		$acceptingType = $this->transformCommonType($acceptingType);
 
