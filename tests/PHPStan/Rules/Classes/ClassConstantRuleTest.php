@@ -82,6 +82,10 @@ class ClassConstantRuleTest extends RuleTestCase
 					'Learn more at https://phpstan.org/user-guide/discovering-symbols',
 				],
 				[
+					'Cannot access constant FOO on string.',
+					24,
+				],
+				[
 					'Class ClassConstantNamespace\Foo referenced with incorrect case: ClassConstantNamespace\FOO.',
 					26,
 				],
@@ -98,7 +102,11 @@ class ClassConstantRuleTest extends RuleTestCase
 					28,
 				],
 				[
-					'Access to undefined constant ClassConstantNamespace\Foo|string::DOLOR.',
+					'Cannot access constant LOREM on ClassConstantNamespace\Foo|string.',
+					32,
+				],
+				[
+					'Cannot access constant DOLOR on ClassConstantNamespace\Foo|string.',
 					33,
 				],
 			],

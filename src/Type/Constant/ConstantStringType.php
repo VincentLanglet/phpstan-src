@@ -539,11 +539,6 @@ class ConstantStringType extends StringType implements ConstantScalarType
 		return TypeCombinator::remove(new MixedType(), TypeCombinator::union(...$subtractedTypes));
 	}
 
-	public function canAccessConstants(): TrinaryLogic
-	{
-		return $this->isClassString();
-	}
-
 	public function hasConstant(string $constantName): TrinaryLogic
 	{
 		return $this->getObjectType()->hasConstant($constantName);

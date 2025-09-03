@@ -230,15 +230,10 @@ final class ClassConstantRule implements Rule
 			}
 		}
 
-		if ($classType->isString()->yes()) {
-			return $messages;
-		}
-
 		$typeForDescribe = $classType;
 		if ($classType instanceof ThisType) {
 			$typeForDescribe = $classType->getStaticObjectType();
 		}
-		$classType = TypeCombinator::remove($classType, new StringType());
 
 		if (!$classType->canAccessConstants()->yes()) {
 			return array_merge($messages, [

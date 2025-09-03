@@ -31,3 +31,11 @@ FOO::LOREM;
 $fooOrString = doFoo();
 $fooOrString::LOREM;
 $fooOrString::DOLOR;
+
+class SomeFoo
+{
+	public const TEST = 1;
+}
+
+$s = SomeFoo::class;
+echo $s::TEST;

@@ -5,6 +5,8 @@ namespace PHPStan\Type;
 use PHPStan\Php\PhpVersion;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Reflection\ClassConstantReflection;
+use PHPStan\Reflection\Dummy\DummyClassConstantReflection;
 use PHPStan\Reflection\ReflectionProviderStaticAccessor;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\TrinaryLogic;
@@ -315,6 +317,21 @@ class StringType implements Type
 	public function exponentiate(Type $exponent): Type
 	{
 		return ExponentiateHelper::exponentiate($this, $exponent);
+	}
+
+	public function canAccessConstants(): TrinaryLogic
+	{
+		return $this->isClassString();
+	}
+
+	public function hasConstant(string $constantName): TrinaryLogic
+	{
+		return TrinaryLogic::createMaybe();
+	}
+
+	public function getConstant(string $constantName): ClassConstantReflection
+	{
+		return new DummyClassConstantReflection($constantName);
 	}
 
 	public function toPhpDocNode(): TypeNode
