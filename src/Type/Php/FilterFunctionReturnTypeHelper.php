@@ -28,6 +28,8 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\VerbosityLevel;
+
 use function array_key_exists;
 use function array_merge;
 use function hexdec;
@@ -191,9 +193,11 @@ final class FilterFunctionReturnTypeHelper
 			$type = TypeCombinator::intersect($type, $accessory);
 		}
 
-		if ($exactType === null || $hasOptions->maybe() || (!$inputType->equals($type) && $inputType->isSuperTypeOf($type)->yes())) {
-			if (!$defaultType->isSuperTypeOf($type)->yes()) {
-				$type = TypeCombinator::union($type, $defaultType);
+		if ($this->isValidationFilter($filterValue)) {
+			if ($exactType === null || $hasOptions->maybe() || (!$inputType->equals($type) && $inputType->isSuperTypeOf($type)->yes())) {
+				if (!$defaultType->isSuperTypeOf($type)->yes()) {
+					$type = TypeCombinator::union($type, $defaultType);
+				}
 			}
 		}
 
@@ -208,7 +212,7 @@ final class FilterFunctionReturnTypeHelper
 			return new ArrayType($inputArrayKeyType ?? $mixedType, $type);
 		}
 
-		if ($this->hasFlag('FILTER_THROW_ON_FAILURE', $flagsType)->yes()) {
+		if ($this->isValidationFilter($filterValue) && $this->hasFlag('FILTER_THROW_ON_FAILURE', $flagsType)->yes()) {
 			$type = TypeCombinator::remove($type, $defaultType);
 		}
 
@@ -389,16 +393,43 @@ final class FilterFunctionReturnTypeHelper
 		}
 
 		if ($filterValue === $this->getConstant('FILTER_DEFAULT')) {
-			if ($this->canStringBeSanitized($filterValue, $flagsType)->no() && $in->isString()->yes()) {
-				return $in;
-			}
+			$scalarOrNull = new UnionType([
+				new StringType(),
+				new FloatType(),
+				new BooleanType(),
+				new IntegerType(),
+				new NullType(),
+			]);
+			if ($scalarOrNull->isSuperTypeOf($in)->yes()) {
+				$canBeSanitized = $this->canStringBeSanitized($filterValue, $flagsType);
+				if ($canBeSanitized->no()) {
+					$stringType = $in->toString();
+				} else {
+					$stringType = $in->isString()->no()
+						? $in->toString()
+						: TypeCombinator::union(TypeCombinator::remove($in, new StringType()), new StringType());
+				}
 
-			if ($in->isBoolean()->yes() || $in->isFloat()->yes() || $in->isInteger()->yes() || $in->isNull()->yes()) {
-				return $in->toString();
+				return $this->handleEmptyStringNullFlag($stringType, $flagsType);
 			}
 		}
 
 		return null;
+	}
+
+	private function handleEmptyStringNullFlag(Type $in, ?Type $flagsType): Type
+	{
+		$hasFlag = $this->hasFlag('FILTER_FLAG_EMPTY_STRING_NULL', $flagsType);
+		if ($hasFlag->no()) {
+			return $in;
+		}
+
+		$hasEmptyString = !$in->isSuperTypeOf(new ConstantStringType(''))->no();
+		if ($hasFlag->maybe()) {
+			return $hasEmptyString ? TypeCombinator::addNull($in) : $in;
+		}
+
+		return $hasEmptyString ? TypeCombinator::remove(TypeCombinator::addNull($in), new ConstantStringType('')) : $in;
 	}
 
 	/** @param array<string, ?Type> $typeOptions */
@@ -532,7 +563,7 @@ final class FilterFunctionReturnTypeHelper
 	private function canStringBeSanitized(int $filterValue, ?Type $flagsType): TrinaryLogic
 	{
 		// If it is a validation filter, the string will not be changed
-		if (($filterValue & self::VALIDATION_FILTER_BITMASK) !== 0) {
+		if ($this->isValidationFilter($filterValue)) {
 			return TrinaryLogic::createNo();
 		}
 
@@ -545,6 +576,11 @@ final class FilterFunctionReturnTypeHelper
 		}
 
 		return TrinaryLogic::createYes();
+	}
+
+	private function isValidationFilter(int $filterValue): bool
+	{
+		return ($filterValue & self::VALIDATION_FILTER_BITMASK) !== 0;
 	}
 
 }

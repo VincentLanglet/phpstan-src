@@ -8,10 +8,24 @@ class Foo
 {
 	/**
 	 * @param non-empty-string $str
+	 * @param string $maybe_empty_string
+	 * @param null|string $nullable_string
+	 * @param null|non-empty-string $nullable_non_empty_string
+	 * @param int $int
 	 * @param positive-int $positive_int
 	 * @param negative-int $negative_int
+	 * @param bool $bool
 	 */
-	public function run(string $str, int $int, int $positive_int, int $negative_int): void
+	public function run(
+		string $str,
+		string $maybe_empty_string,
+		null|string $nullable_string,
+		null|string $nullable_non_empty_string,
+		int $int,
+		int $positive_int,
+		int $negative_int,
+		bool $bool,
+	): void
 	{
 		assertType('non-empty-string', $str);
 
@@ -19,13 +33,13 @@ class Foo
 		assertType('non-empty-string', $return);
 
 		$return = filter_var($str, FILTER_DEFAULT, FILTER_FLAG_STRIP_LOW);
-		assertType('string|false', $return);
+		assertType('string', $return);
 
 		$return = filter_var($str, FILTER_DEFAULT, FILTER_FLAG_STRIP_HIGH);
-		assertType('string|false', $return);
+		assertType('string', $return);
 
 		$return = filter_var($str, FILTER_DEFAULT, FILTER_FLAG_STRIP_BACKTICK);
-		assertType('string|false', $return);
+		assertType('string', $return);
 
 		$return = filter_var($str, FILTER_VALIDATE_EMAIL);
 		assertType('non-falsy-string|false', $return);
@@ -49,7 +63,7 @@ class Foo
 		assertType('non-empty-string|false', $return);
 
 		$return = filter_var($str, FILTER_SANITIZE_STRING);
-		assertType('string|false', $return);
+		assertType('string', $return);
 
 		$return = filter_var($str, FILTER_VALIDATE_INT);
 		assertType('int|false', $return);
@@ -129,5 +143,38 @@ class Foo
 
 		$return = filter_var('0x10', FILTER_VALIDATE_INT, FILTER_FLAG_ALLOW_HEX);
 		assertType('16', $return);
+
+		$return = filter_var($str, FILTER_DEFAULT, FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('non-empty-string', $return);
+
+		$return = filter_var($maybe_empty_string, FILTER_DEFAULT, FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('non-empty-string|null', $return);
+
+		$return = filter_var('', FILTER_DEFAULT, FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('null', $return);
+
+		$return = filter_var(true, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType("'1'", $return);
+
+		$return = filter_var(false, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('null', $return);
+
+		$return = filter_var($bool, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType("'1'|null", $return);
+
+		$return = filter_var(0.0, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType("'-0'|'0'", $return);
+
+		$return = filter_var(0, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType("'0'", $return);
+
+		$return = filter_var(null, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('null', $return);
+
+		$return = filter_var($nullable_string, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('non-empty-string|null', $return);
+
+		$return = filter_var($nullable_non_empty_string, options: FILTER_FLAG_EMPTY_STRING_NULL);
+		assertType('non-empty-string|null', $return);
 	}
 }
