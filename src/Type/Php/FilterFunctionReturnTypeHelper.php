@@ -193,11 +193,9 @@ final class FilterFunctionReturnTypeHelper
 			$type = TypeCombinator::intersect($type, $accessory);
 		}
 
-		if ($this->isValidationFilter($filterValue)) {
-			if ($exactType === null || $hasOptions->maybe() || (!$inputType->equals($type) && $inputType->isSuperTypeOf($type)->yes())) {
-				if (!$defaultType->isSuperTypeOf($type)->yes()) {
-					$type = TypeCombinator::union($type, $defaultType);
-				}
+		if ($exactType === null || $hasOptions->maybe() || (!$inputType->equals($type) && $inputType->isSuperTypeOf($type)->yes())) {
+			if (!$defaultType->isSuperTypeOf($type)->yes()) {
+				$type = TypeCombinator::union($type, $defaultType);
 			}
 		}
 
@@ -212,7 +210,7 @@ final class FilterFunctionReturnTypeHelper
 			return new ArrayType($inputArrayKeyType ?? $mixedType, $type);
 		}
 
-		if ($this->isValidationFilter($filterValue) && $this->hasFlag('FILTER_THROW_ON_FAILURE', $flagsType)->yes()) {
+		if ($this->hasFlag('FILTER_THROW_ON_FAILURE', $flagsType)->yes()) {
 			$type = TypeCombinator::remove($type, $defaultType);
 		}
 
@@ -563,7 +561,7 @@ final class FilterFunctionReturnTypeHelper
 	private function canStringBeSanitized(int $filterValue, ?Type $flagsType): TrinaryLogic
 	{
 		// If it is a validation filter, the string will not be changed
-		if ($this->isValidationFilter($filterValue)) {
+		if (($filterValue & self::VALIDATION_FILTER_BITMASK) !== 0) {
 			return TrinaryLogic::createNo();
 		}
 
@@ -576,11 +574,6 @@ final class FilterFunctionReturnTypeHelper
 		}
 
 		return TrinaryLogic::createYes();
-	}
-
-	private function isValidationFilter(int $filterValue): bool
-	{
-		return ($filterValue & self::VALIDATION_FILTER_BITMASK) !== 0;
 	}
 
 }
