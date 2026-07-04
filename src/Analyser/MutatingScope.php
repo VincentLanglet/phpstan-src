@@ -520,24 +520,7 @@ class MutatingScope implements Scope, NodeCallbackInvoker, CollectedDataEmitter
 			return $this;
 		}
 
-		return $this->scopeFactory->create(
-			$this->context,
-			$this->isDeclareStrictTypes(),
-			$this->getFunction(),
-			$this->getNamespace(),
-			$expressionTypes,
-			$nativeExpressionTypes,
-			$this->conditionalExpressions,
-			$this->inClosureBindScopeClasses,
-			$this->anonymousFunctionReflection,
-			$this->isInFirstLevelStatement(),
-			$this->currentlyAssignedExpressions,
-			$this->currentlyAllowedUndefinedExpressions,
-			$this->inFunctionCallsStack,
-			$this->afterExtractCall,
-			$this->parentScope,
-			$this->nativeTypesPromoted,
-		);
+		return $this->createScopeWithExpressionTypes($expressionTypes, $nativeExpressionTypes);
 	}
 
 	public function afterOpenSslCall(string $openSslFunctionName): self
@@ -618,24 +601,7 @@ class MutatingScope implements Scope, NodeCallbackInvoker, CollectedDataEmitter
 			return $this;
 		}
 
-		return $this->scopeFactory->create(
-			$this->context,
-			$this->isDeclareStrictTypes(),
-			$this->getFunction(),
-			$this->getNamespace(),
-			$expressionTypes,
-			$nativeExpressionTypes,
-			$this->conditionalExpressions,
-			$this->inClosureBindScopeClasses,
-			$this->anonymousFunctionReflection,
-			$this->isInFirstLevelStatement(),
-			$this->currentlyAssignedExpressions,
-			$this->currentlyAllowedUndefinedExpressions,
-			$this->inFunctionCallsStack,
-			$this->afterExtractCall,
-			$this->parentScope,
-			$this->nativeTypesPromoted,
-		);
+		return $this->createScopeWithExpressionTypes($expressionTypes, $nativeExpressionTypes);
 	}
 
 	/**
@@ -672,6 +638,15 @@ class MutatingScope implements Scope, NodeCallbackInvoker, CollectedDataEmitter
 			return $this;
 		}
 
+		return $this->createScopeWithExpressionTypes($expressionTypes, $nativeExpressionTypes);
+	}
+
+	/**
+	 * @param array<string, ExpressionTypeHolder> $expressionTypes
+	 * @param array<string, ExpressionTypeHolder> $nativeExpressionTypes
+	 */
+	private function createScopeWithExpressionTypes(array $expressionTypes, array $nativeExpressionTypes): self
+	{
 		return $this->scopeFactory->create(
 			$this->context,
 			$this->isDeclareStrictTypes(),
